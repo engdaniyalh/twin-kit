@@ -1,0 +1,187 @@
+{
+  "name": "twin-kit",
+  "displayName": "Twin-Kit Visual Twin",
+  "description": "Deterministic visual twin for a local Kubernetes release-pipeline sandbox.",
+  "version": "0.1.0",
+  "publisher": "twin-kit",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "icon": "media/icon.png",
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:twinKit.startServer",
+    "onCommand:twinKit.stopServer",
+    "onCommand:twinKit.restartServer",
+    "onCommand:twinKit.openVisualTwin",
+    "onCommand:twinKit.runWalkthrough",
+    "onCommand:twinKit.showOutput"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "twinKit.startServer",
+        "title": "Twin-Kit: Start Twin-Kit Server",
+        "category": "Twin-Kit",
+        "icon": "$(play)"
+      },
+      {
+        "command": "twinKit.stopServer",
+        "title": "Twin-Kit: Stop Twin-Kit Server",
+        "category": "Twin-Kit",
+        "icon": "$(stop)"
+      },
+      {
+        "command": "twinKit.restartServer",
+        "title": "Twin-Kit: Restart Twin-Kit Server",
+        "category": "Twin-Kit",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "twinKit.openVisualTwin",
+        "title": "Twin-Kit: Open Visual Twin",
+        "category": "Twin-Kit",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "twinKit.runWalkthrough",
+        "title": "Twin-Kit: Run Walkthrough...",
+        "category": "Twin-Kit",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "twinKit.showOutput",
+        "title": "Twin-Kit: Show Twin-Kit Output",
+        "category": "Twin-Kit",
+        "icon": "$(output)"
+      },
+      {
+        "command": "twinKit.refreshExplorer",
+        "title": "Refresh Twin-Kit Explorer",
+        "category": "Twin-Kit",
+        "icon": "$(refresh)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "twin-kit",
+          "title": "Twin-Kit",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "twin-kit": [
+        {
+          "id": "twin-kit.explorer",
+          "name": "Twin-Kit Visual Twin"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "twin-kit.explorer",
+          "name": "Twin-Kit Sandbox"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "twin-kit.explorer",
+        "contents": "Twin-Kit server is currently stopped.\n[Start Twin-Kit Server](command:twinKit.startServer)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "twinKit.startServer",
+          "when": "view == twin-kit.explorer",
+          "group": "navigation@1"
+        },
+        {
+          "command": "twinKit.stopServer",
+          "when": "view == twin-kit.explorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "twinKit.openVisualTwin",
+          "when": "view == twin-kit.explorer",
+          "group": "navigation@3"
+        },
+        {
+          "command": "twinKit.runWalkthrough",
+          "when": "view == twin-kit.explorer",
+          "group": "navigation@4"
+        },
+        {
+          "command": "twinKit.refreshExplorer",
+          "when": "view == twin-kit.explorer",
+          "group": "navigation@5"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Twin-Kit",
+      "properties": {
+        "twinKit.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to twin-kit/server.py script. If empty, auto-detects in workspace."
+        },
+        "twinKit.pythonPath": {
+          "type": "string",
+          "default": "python3",
+          "description": "Path to Python executable."
+        },
+        "twinKit.port": {
+          "type": "number",
+          "default": 8765,
+          "description": "Port to run the twin-kit server on."
+        },
+        "twinKit.minikubeProfile": {
+          "type": "string",
+          "default": "twin-kit",
+          "description": "Minikube profile name."
+        },
+        "twinKit.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically start twin-kit server when opening workspace containing twin-kit/server.py."
+        },
+        "twinKit.pollInterval": {
+          "type": "number",
+          "default": 2000,
+          "description": "Polling interval in milliseconds for fetching twin state."
+        },
+        "twinKit.walkthroughs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "healthy-rollout",
+            "canary-failure-rollback",
+            "endpoint-blocked"
+          ],
+          "description": "List of available scripted walkthrough IDs."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "typescript": "^5.3.3"
+  }
+}
