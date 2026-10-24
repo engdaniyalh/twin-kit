@@ -11,17 +11,14 @@ export async function activate(context: vscode.ExtensionContext) {
     const serverManager = new ServerManager(context);
     context.subscriptions.push(serverManager);
 
-    // Register Sidebar TreeDataProvider
     const twinViewProvider = new TwinViewProvider(serverManager);
     vscode.window.registerTreeDataProvider('twin-kit.explorer', twinViewProvider);
 
-    // Status Bar Item
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     statusBarItem.command = 'twinKit.openVisualTwin';
     context.subscriptions.push(statusBarItem);
     updateStatusBar(serverManager, null);
 
-    // Subscribe to state and status changes for status bar
     serverManager.onStateChange((state) => {
         updateStatusBar(serverManager, state);
     });
@@ -30,7 +27,6 @@ export async function activate(context: vscode.ExtensionContext) {
         updateStatusBar(serverManager, serverManager.getState());
     });
 
-    // Register Commands
     context.subscriptions.push(
         vscode.commands.registerCommand('twinKit.startServer', async () => {
             await serverManager.startServer();
@@ -61,7 +57,6 @@ export async function activate(context: vscode.ExtensionContext) {
         })
     );
 
-    // Configuration change listener
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(async (e) => {
             if (e.affectsConfiguration('twinKit.port') || e.affectsConfiguration('twinKit.minikubeProfile')) {
@@ -73,7 +68,6 @@ export async function activate(context: vscode.ExtensionContext) {
         })
     );
 
-    // Detect server script in workspace on activation
     const scriptPath = serverManager.findServerScript();
     if (scriptPath) {
         statusBarItem.show();

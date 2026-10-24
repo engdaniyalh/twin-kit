@@ -27,7 +27,7 @@ export class ServerManager {
         const config = vscode.workspace.getConfiguration('twinKit');
         return {
             serverPath: config.get<string>('serverPath', ''),
-            pythonPath: config.get<string>('pythonPath', 'python3'),
+            pythonPath: config.get<string>('pythonPath', process.platform === 'win32' ? 'python' : 'python3'),
             port: config.get<number>('port', 8765),
             minikubeProfile: config.get<string>('minikubeProfile', 'twin-kit'),
             autoStart: config.get<boolean>('autoStart', false),
@@ -133,7 +133,7 @@ export class ServerManager {
             return false;
         }
 
-        const pythonExec = cfg.pythonPath || 'python3';
+        const pythonExec = cfg.pythonPath || (process.platform === 'win32' ? 'python' : 'python3');
         this.log(`Starting Twin-Kit server: ${pythonExec} "${scriptPath}" --port ${cfg.port} --profile ${cfg.minikubeProfile}`);
 
         try {
@@ -172,7 +172,6 @@ export class ServerManager {
                 }
             });
 
-            // Wait brief moment for startup
             await new Promise((res) => setTimeout(res, 500));
             this.attachedToExisting = false;
             this.setRunningState(true);
@@ -209,7 +208,7 @@ export class ServerManager {
     public startPolling(): void {
         this.stopPolling();
         const cfg = this.getConfig();
-        this.pollState(); // immediate initial poll
+        this.pollState();
         this.pollTimer = setInterval(() => {
             this.pollState();
         }, cfg.pollInterval);
@@ -259,7 +258,6 @@ export class ServerManager {
 
     private handlePollFailure(): void {
         if (this.isRunning && this.attachedToExisting) {
-            // Attached server died
             this.log('Lost connection to attached Twin-Kit server.');
             this.stopServer();
             vscode.window.showErrorMessage('Lost connection to Twin-Kit server.', 'Restart').then(sel => {

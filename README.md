@@ -23,6 +23,7 @@ This VS Code extension brings `twin-kit` directly into VS Code with zero runtime
 
 ```
 .
+├── bootstrap.sh            # Repository bootstrap script
 ├── twin-kit/
 │   └── server.py           # Stdlib-only Python 3.10+ server
 └── extension/
@@ -72,7 +73,7 @@ The extension contributes settings under the `twinKit` namespace:
 ## Extension Development Host Testing Checklist
 
 1. **Compilation & Packaging**:
-   - Run `cd extension && npm run compile` -> Must succeed without errors.
+   - Run `cd extension && npm install && npm run compile` -> Must succeed without errors.
    - Run `cd extension && npm run package` -> Must produce `twin-kit-0.1.0.vsix`.
 
 2. **Workspace Auto-Detection**:

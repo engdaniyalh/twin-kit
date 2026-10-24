@@ -66,7 +66,6 @@ export class TwinViewProvider implements vscode.TreeDataProvider<TwinTreeItem> {
         }
 
         if (!element) {
-            // Root elements: 5 sections
             return [
                 this.getMinikubeRoot(state),
                 this.getRolloutRoot(state),
@@ -76,7 +75,6 @@ export class TwinViewProvider implements vscode.TreeDataProvider<TwinTreeItem> {
             ];
         }
 
-        // Child elements based on parent contextValue
         if (element.contextValue === 'minikubeRoot') {
             const mk = state.minikube;
             if (!mk) return [];

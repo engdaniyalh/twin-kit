@@ -18,7 +18,6 @@ export class TwinPanel {
 
         this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
 
-        // Handle messages from Webview
         this.panel.webview.onDidReceiveMessage(
             async (message) => {
                 switch (message.command) {
@@ -44,7 +43,6 @@ export class TwinPanel {
             this.disposables
         );
 
-        // Listen for state changes
         this.serverManager.onStateChange((state) => {
             this.postStateUpdate(state);
         }, null, this.disposables);
@@ -162,11 +160,8 @@ export class TwinPanel {
             </script>
         `;
 
-        // Inject CSP into head
         let modified = serverHtml.replace('<head>', `<head>${csp}`);
-        // Inject toolbar at top of body
         modified = modified.replace('<body>', `<body>${toolbarHtml}`);
-        // Add nonce to all script tags in HTML so CSP allows them to execute
         modified = modified.replace(/<script(?![^>]*nonce=)/gi, `<script nonce="${nonce}"`);
         return modified;
     }
